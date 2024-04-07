@@ -1,0 +1,22 @@
+{
+  "name": "hospital_management",
+  "version": "1.0.0",
+  "description": "This is the backend for hospital management system which is generally manages all the works and appointments in a hospital, it also keep records of all the doctors.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm start"
+  },
+  "keywords": [
+    "hospital"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.1.0",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.5.0",
+    "nodemon": "^3.1.0"
+  }
+}
