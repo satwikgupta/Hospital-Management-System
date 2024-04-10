@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "This is the backend for hospital management system which is generally manages all the works and appointments in a hospital, it also keep records of all the doctors.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon src/index.js"
   },
