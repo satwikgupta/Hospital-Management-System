@@ -5,20 +5,32 @@ import { patientRegister } from "../controllers/user.controller";
 
 const router = express.Router();
 
-router.post(
-  "/patient/register",
-  upload.fields([{ name: "avatar", maxCount: 1 }]),
-  patientRegister
-);
 router.post("/login", login);
-router.post("/admin/addnew", isAdminAuthenticated, addNewAdmin);
-router.post("/doctor/addnew", isAdminAuthenticated, addNewDoctor);
-router.get("/doctors", getAllDoctors);
-router.get("/patient/me", isPatientAuthenticated, getUserDetails);
-router.get("/admin/me", isAdminAuthenticated, getUserDetails);
-router.get("/patient/logout", isPatientAuthenticated, logoutPatient);
-router.get("/admin/logout", isAdminAuthenticated, logoutAdmin);
 
+router
+  .route("/patient")
+  .post(
+    "/register",
+    upload.fields([{ name: "avatar", maxCount: 1 }]),
+    patientRegister
+  )
+  .get("/me", isPatientAuthenticated, getUserDetails)
+  .get("/logout", isPatientAuthenticated, logoutPatient);
 
+router
+  .route("/admin")
+  .post("/addnew", isAdminAuthenticated, addNewAdmin)
+  .get("/me", isAdminAuthenticated, getUserDetails)
+  .get("/logout", isAdminAuthenticated, logoutAdmin);
+
+router
+  .route("/doctor")
+  .post(
+    "/addnew",
+    isAdminAuthenticated,
+    upload.fields([{ name: "avatar", maxCount: 1 }]),
+    addNewDoctor
+  )
+  .get(getAllDoctors);
 
 export default router;

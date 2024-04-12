@@ -81,5 +81,85 @@ export const login = new asyncHandler(async (req, res) => {
   return res
     .status(200)
     .cookie(cookieName, token, options)
-    .json(new ApiResponse(200, "Login Successful", {user, token}));
+    .json(new ApiResponse(200, "Login Successful", { user, token }));
+});
+
+export const getUserDetails = new asyncHandler(async (req, res) => {
+  const user = res.user;
+  return res.status(200).json(new ApiResponse(200, "User Found", user));
+});
+
+export const logoutPatient = new asyncHandler(async (req, res) => {
+  const options = {
+    httpOnly: true,
+    secure: true,
+    expires: new Date(Date.now()),
+  };
+
+  return res
+    .status(200)
+    .cookie("patientToken", "", options)
+    .json(new ApiResponse(200, "Logout Successful"));
+});
+
+// admin routes
+
+export const addNewAdmin = new asyncHandler(async (req, res) => {
+  const { firstName, lastName, email, phone, nic, dob, gender, password } =
+    req.body;
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !phone ||
+    !nic ||
+    !dob ||
+    !gender ||
+    !password
+  ) {
+    throw new ApiError(400, "Please Fill Full Form!");
+  }
+
+  const existed = await User.findOne({ email });
+
+  if (existed) {
+    throw new ApiError(400, "Admin already existed!");
+  }
+
+  const avatar = req.files.avatar[0].path;
+
+  const avatarUrl = avatar && (await uploadOnCloudinary(avatar));
+
+  const user = await User.create({
+    firstName,
+    lastName,
+    email,
+    phone,
+    nic,
+    dob,
+    gender,
+    password,
+    role: "Admin",
+    avatar: {
+      publicId: avatar ? avatarUrl.public_id : null,
+      url: avatar ? avatarUrl.secure_url : null,
+    },
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, "Admin Registed Successfully", user));
+});
+
+export const logoutAdmin = new asyncHandler(async (req, res) => {
+  const options = {
+    httpOnly: true,
+    secure: true,
+    expires: new Date(Date.now()),
+  };
+
+  return res
+    .status(200)
+    .cookie("adminToken", "", options)
+    .json(new ApiResponse(200, "Logout Successful"));
 });
