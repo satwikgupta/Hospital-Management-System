@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // import routes
 
-import userRoutes from './routes/user.route';
+import userRoutes from './routes/user.route.js';
 
 // declaring routes
 app.use('/api/users', userRoutes);
