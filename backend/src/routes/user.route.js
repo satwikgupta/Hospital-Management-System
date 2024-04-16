@@ -10,6 +10,7 @@ import {
   addNewAdmin,
   addNewDoctor,
   getAllDoctors,
+  register,
 } from "../controllers/user.controller.js";
 
 import {
@@ -22,17 +23,15 @@ const router = express.Router();
 
 router.post("/login", login);
 router.post(
-  "/patient/register",
-  upload.fields([
-    { name: "avatar", maxCount: 1 },
-  ]),
-  patientRegister
+  "/register",
+  upload.fields([{ name: "avatar", maxCount: 1 }]),
+  register
 );
 router.post(
   "/admin/addnew",
   isAdminAuthenticated,
   upload.fields([{ name: "avatar", maxCount: 1 }]),
-  addNewAdmin
+  register
 );
 router.post(
   "/doctor/addnew",

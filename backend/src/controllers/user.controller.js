@@ -52,7 +52,7 @@ export const patientRegister = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(201, "User Created Successfully", user));
+    .json(new ApiResponse(201, user, "User Created Successfully"));
 });
 
 export const login = asyncHandler(async (req, res) => {
@@ -88,11 +88,14 @@ export const login = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .cookie(cookieName, token, options)
-    .json(new ApiResponse(200, "Login Successful", { loggedInUser, token }));
+    .json(new ApiResponse(200, { loggedInUser, token }, "Login Successful"));
 });
 
 export const getUserDetails = asyncHandler(async (req, res) => {
   const user = req.user;
+  if (!user) {
+    throw new ApiError(400, "User not logged-in !")
+  }
   
   return res.status(200).json(new ApiResponse(200, user, "User Found" ));
 });
@@ -157,7 +160,58 @@ export const addNewAdmin = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(201, "Admin Registed Successfully", user));
+    .json(new ApiResponse(201, user, "Admin Registed Successfully"));
+});
+
+export const register = asyncHandler(async (req, res) => {
+  const { firstName, lastName, email, phone, nic, dob, gender, password, role } =
+    req.body;
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !phone ||
+    !nic ||
+    !dob ||
+    !gender ||
+    !password
+  ) {
+    throw new ApiError(400, "Please Fill Full Form!");
+  }
+  if (!role) {
+    throw new ApiError(400, "Role not specified !")
+  }
+
+  const existed = await User.findOne({ email, role, phone });
+
+  if (existed) {
+    throw new ApiError(400, "Admin already existed!");
+  }
+
+  const avatar = req.files?.avatar[0].path;
+  var avatarUrl;
+  if (avatar) {
+    avatarUrl = avatar && (await uploadOnCloudinary(avatar));
+  }
+  const user = await User.create({
+    firstName,
+    lastName,
+    email,
+    phone,
+    nic,
+    dob,
+    gender,
+    password,
+    role,
+    avatar: {
+      publicId: avatar ? avatarUrl.public_id : null,
+      url: avatar ? avatarUrl.secure_url : null,
+    },
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(20, user, `${role} Registed Successfully`));
 });
 
 export const logoutAdmin = asyncHandler(async (req, res) => {
@@ -170,7 +224,7 @@ export const logoutAdmin = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .cookie("adminToken", "", options)
-    .json(new ApiResponse(200, "Logout Successful"));
+    .json(new ApiResponse(200, [], "Logout Successful"));
 });
 
 export const addNewDoctor = asyncHandler(async (req, res) => {
@@ -233,10 +287,11 @@ export const addNewDoctor = asyncHandler(async (req, res) => {
   });
   return res
     .status(201)
-    .json(new ApiResponse(201, "Doctor Registed Successfully", user));
+    .json(new ApiResponse(201, user, "Doctor Registed Successfully"));
 });
 
 export const getAllDoctors = asyncHandler(async (req, res) => {
   const doctors = await User.find({ role: "Doctor" });
-  return res.status(200).json(new ApiResponse(200, "Doctors Found", doctors));
+
+  return res.status(200).json(new ApiResponse(200, doctors, "Doctors Found"));
 });
