@@ -4,15 +4,15 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const sendMessage = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, phoneNumber, message } = req.body;
-  if (!firstName || !lastName || !email || !phoneNumber || !message) {
+  const { firstName, lastName, email, phone, message } = req.body;
+  if (!firstName || !lastName || !email || !phone || !message) {
     throw new ApiError(400, "Please Provide All The Required Fields!");
   }
   const messageCreate = await Message.create({
     firstName,
     lastName,
     email,
-    phoneNumber,
+    phone,
     message,
   });
   res

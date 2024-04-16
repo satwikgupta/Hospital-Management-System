@@ -8,7 +8,9 @@ import {
   getAllMessages,
 } from "../controllers/message.controller.js";
 
-router.get("/all", isAdminAuthenticated, getAllMessages);
-router.post("/send", sendMessage);
+router
+  .route("/")
+  .get(isAdminAuthenticated, getAllMessages)
+  .post(sendMessage);
 
 export default router;
