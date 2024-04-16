@@ -1,3 +1,4 @@
+import { exit } from "process";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -6,7 +7,7 @@ import jwt from "jsonwebtoken";
 export const isPatientAuthenticated = asyncHandler(async (req, res, next) => {
   try {
     const token =
-      req.cookies?.patientToken || req.headers.authorization?.split(" ")[1];
+      req.cookies?.patientToken || req.headers.authorization?.split(" ")[1];    
 
     if (!token) throw new ApiError(401, "Please authenticate");
 
@@ -18,16 +19,17 @@ export const isPatientAuthenticated = asyncHandler(async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log("Error while login: ", error);
+    throw error;
   }
 });
 
 export const isAdminAuthenticated = asyncHandler(async (req, res, next) => {
-  try {
     const token =
       req.cookies?.adminToken || req.headers.authorization?.split(" ")[1];
 
     if (!token) throw new ApiError(401, "Please authenticate");
+    console.log('Here in admin auth middleware');
+    
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.user = await User.findById(decoded.id);
@@ -36,9 +38,6 @@ export const isAdminAuthenticated = asyncHandler(async (req, res, next) => {
       throw new ApiError(403, "You have no access to this resource !");
 
     next();
-  } catch (error) {
-    console.log("Error while login: ", error);
-  }
 });
 
 export const isAuthenticated = (...roles) =>

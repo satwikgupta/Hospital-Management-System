@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import { type } from "os";
-import validator from "validator";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const appointmentSchema = new mongoose.Schema({
   patientId: {
@@ -22,6 +21,8 @@ const appointmentSchema = new mongoose.Schema({
     default: false
   }
 
-}, {timestamps: true});
+}, { timestamps: true });
+
+appointmentSchema.plugin(mongooseAggregatePaginate);
 
 export const Appointment = mongoose.model("Appointment", appointmentSchema);

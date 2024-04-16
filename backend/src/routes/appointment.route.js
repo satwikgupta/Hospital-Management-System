@@ -12,9 +12,11 @@ import {
 
 const router = express.Router();
 
-router.post("/post", isPatientAuthenticated, postAppointment);
-router.get("/all", isAdminAuthenticated, getAllAppointments);
-router.put("/update/:id", isAdminAuthenticated, updateAppointmentStatus);
-router.delete("/cancel/:id", isAdminAuthenticated, cancelAppointment);
+router
+  .route("/")
+  .post(isPatientAuthenticated, postAppointment)
+  .get(isAdminAuthenticated, getAllAppointments)
+  .put(isAdminAuthenticated, updateAppointmentStatus)
+  .delete(isAdminAuthenticated, cancelAppointment);
 
 export default router;
