@@ -3,25 +3,25 @@ import { Link, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Context } from "../main";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
-  const { isAuthenticated, setIsAuthenticated } = useContext(Context);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const handleLogout = async () => {
-    await axios
-      .get("/api/v1/user/patient/logout", {
-        withCredentials: true,
-      })
-      .then((res) => {
-        toast.success(res.data.message);
-        setIsAuthenticated(false);
-      })
-      .catch((err) => {
-        toast.error(err.response.data.message);
-      });
-  };
+  // const handleLogout = async () => {
+  //   await axios
+  //     .get("/api/v1/user/patient/logout", {
+  //       withCredentials: true,
+  //     })
+  //     .then((res) => {
+  //       toast.success(res.data.message);
+  //       setIsAuthenticated(false);
+  //     })
+  //     .catch((err) => {
+  //       toast.error(err.response.data.message);
+  //     });
+  // };
 
   const navigateTo = useNavigate();
 
